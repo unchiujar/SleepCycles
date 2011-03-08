@@ -22,6 +22,12 @@
     </dependency>
   </dependencies>
 
+  <issueManagement>
+  </issueManagement>
+  <scm>
+  </scm>
+  <organization>
+  </organization>
   <build>
     <plugins>
       <plugin>
@@ -132,5 +138,10 @@
       </build>
     </profile>
   </profiles>
+  <properties>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <modules>
+  </modules>
 
 </project>

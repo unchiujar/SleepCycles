@@ -17,20 +17,7 @@
 **    along with SleepCycles.  If not, see <http://www.gnu.org/licenses/>.
 **
 *******************************************************************************/
-package org.unchiujar.sleepcycles.test;
-
-import org.unchiujar.sleepcycles.SleepCycles;
-
-import android.test.ActivityInstrumentationTestCase2;
-
-public class SleepCyclesActivityTest extends ActivityInstrumentationTestCase2<SleepCycles> {
-
-    public SleepCyclesActivityTest() {
-        super(SleepCycles.class);
-    }
-
-    public void testActivity() {
-        SleepCycles activity = getActivity();
-        assertNotNull(activity);
-    }
-}
+/**
+ * Contains the main Activity for the application.
+ */
+package org.unchiujar.sleepcycles;
