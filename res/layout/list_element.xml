@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="70dp"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_alignParentRight="true"
+        android:id="@+id/setAlarm"
+        android:layout_width="70dp"
+        android:layout_height="fill_parent"
+        android:text="@string/set_alarm" 
+        android:background="@drawable/button"
+        android:gravity="center_vertical|center_horizontal"
+        android:padding="0dip"/>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" 
+        android:id="@+id/info"
+        android:layout_toLeftOf="@id/setAlarm"
+        android:padding="1dip">
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="top|fill_horizontal"
+            android:text="@string/hour_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/lengthView"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|fill_horizontal"
+            android:text="@string/length_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+
+</RelativeLayout>

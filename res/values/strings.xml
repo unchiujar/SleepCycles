@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SleepCycles</string>
+    <string name="set_alarm">Add alert</string>
+    <string name="hour_text">Hour Text</string>
+    <string name="length_text">Length Text</string>
+	<string name="wake_time">Select wake time</string>
+	<string name="bedtime_notification_ticker">Time to go to bed…</string>
+	<string name="bedtime_notification_title">SleepCycles</string>
+	<string name="bedtime_notification_text">Wake time is in </string>
+	<string name="one_minute"> minute</string>
+	<string name="multipe_minutes"> minutes</string>
+	<string name="one_hour"> hour</string>
+	<string name="multipe_hours"> hours</string>
+	<string name="and"> and </string>
+	<string name="start_button">Start</string>
+	<string name="stop_button">Stop</string>
+    <string name="restart_button">Restart</string>   
+	<string name="calculate_sleep_cycle">Time sleep cycle length</string>   
+	<string name="help_button">Help</string>   
+	<string name="calibrate">Calibrate</string>   
+	<string name="alert">Alert</string>
+</resources>
