@@ -18,7 +18,7 @@
  **
  *******************************************************************************/
 
-package org.unchiujar.android;
+package org.unchiujar.android.sleepcycles;
 
 import java.util.Calendar;
 

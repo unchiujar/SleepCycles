@@ -1,5 +1,5 @@
 
-package org.unchiujar.android;
+package org.unchiujar.android.sleepcycles;
 
 /**
  * Holds state of the application.

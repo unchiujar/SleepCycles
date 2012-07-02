@@ -18,11 +18,11 @@
  **
  *******************************************************************************/
 
-package org.unchiujar.android;
+package org.unchiujar.android.sleepcycles;
 
-import static org.unchiujar.android.R.string.bedtime_notification_ticker;
-import static org.unchiujar.android.R.string.bedtime_notification_title;
-import static org.unchiujar.android.R.string.bedtime_notification_text;
+import static org.unchiujar.android.sleepcycles.R.string.bedtime_notification_text;
+import static org.unchiujar.android.sleepcycles.R.string.bedtime_notification_ticker;
+import static org.unchiujar.android.sleepcycles.R.string.bedtime_notification_title;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

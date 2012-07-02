@@ -18,7 +18,7 @@
  **
  *******************************************************************************/
 
-package org.unchiujar.android;
+package org.unchiujar.android.sleepcycles;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,14 +44,14 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class SleepCycles extends TabActivity {
-    private static final String CHRONO_START_TIME = "org.unchiujar.android.sleepcycles.chrono_start_time";
+    private static final String CHRONO_START_TIME = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_start_time";
 
-    private static final String CHRONO_STARTED = "org.unchiujar.android.sleepcycles.chrono_started";
+    private static final String CHRONO_STARTED = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_started";
 
     private static final Logger LOG = LoggerFactory.getLogger(SleepCycles.class);
 
-    private static final String CALIBRATION_CYCLES = "org.unchiujar.android.sleepcycles.calibration_cycles";
-    private static final String CYCLE_LENGTH = "org.unchiujar.android.sleepcycles.cycle_length";
+    private static final String CALIBRATION_CYCLES = "org.unchiujar.android.sleepcycles.sleepcycles.calibration_cycles";
+    private static final String CYCLE_LENGTH = "org.unchiujar.android.sleepcycles.sleepcycles.cycle_length";
 
     private TextView mTimeDisplay;
     private Button btnStart;

@@ -18,13 +18,13 @@
  **
  *******************************************************************************/
 
-package org.unchiujar.android;
+package org.unchiujar.android.sleepcycles;
 
-import static org.unchiujar.android.R.string.and;
-import static org.unchiujar.android.R.string.multipe_hours;
-import static org.unchiujar.android.R.string.multipe_minutes;
-import static org.unchiujar.android.R.string.one_hour;
-import static org.unchiujar.android.R.string.one_minute;
+import static org.unchiujar.android.sleepcycles.R.string.and;
+import static org.unchiujar.android.sleepcycles.R.string.multipe_hours;
+import static org.unchiujar.android.sleepcycles.R.string.multipe_minutes;
+import static org.unchiujar.android.sleepcycles.R.string.one_hour;
+import static org.unchiujar.android.sleepcycles.R.string.one_minute;
 
 import java.util.Date;
 
@@ -39,8 +39,8 @@ import android.graphics.Typeface;
 import android.widget.TextView;
 
 public class Util {
-    public static final String MINUTES_LEFT = "org.unchiujar.android.sleepcycles.minutes";
-    public static final String HOURS_LEFT = "org.unchiujar.android.sleepcycles.hours";
+    public static final String MINUTES_LEFT = "org.unchiujar.android.sleepcycles.sleepcycles.minutes";
+    public static final String HOURS_LEFT = "org.unchiujar.android.sleepcycles.sleepcycles.hours";
     private static final Logger LOG = LoggerFactory.getLogger(Util.class);
 
     /**
