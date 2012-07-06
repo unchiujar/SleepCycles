@@ -21,12 +21,15 @@
 package org.unchiujar.android.sleepcycles;
 
 import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import android.app.TabActivity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -43,6 +46,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+@ContentView(R.layout.main)
 public class SleepCycles extends TabActivity {
     private static final String CHRONO_START_TIME = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_start_time";
 
@@ -52,20 +56,34 @@ public class SleepCycles extends TabActivity {
 
     private static final String CALIBRATION_CYCLES = "org.unchiujar.android.sleepcycles.sleepcycles.calibration_cycles";
     private static final String CYCLE_LENGTH = "org.unchiujar.android.sleepcycles.sleepcycles.cycle_length";
-
-    private TextView mTimeDisplay;
-    private Button btnStart;
-    private Button btnStop;
-
     private final static byte SLEEP_CYCLE_MIN_LENGTH = 60;
     private final static byte SLEEP_CYCLE_MAX_LENGTH = 120;
 
     private SharedPreferences prefs = null;
+
+    @InjectView(R.id.timeDisplay)
+    private TextView mTimeDisplay;
+
+    @InjectView(R.id.btnStart)
+    private Button btnStart;
+    @InjectView(R.id.btnStop)
+    private Button btnStop;
+
+    @InjectView(R.id.sleepTime)
     private Chronometer chrono;
+
+    @InjectView(R.id.txtSleepCycles)
     private TextView txtCycles;
+
+    @InjectView(R.id.txtSleepLength)
     private TextView txtSleepLength;
+
+    @InjectView(R.id.txtCycleLength)
     private TextView txtCycleLength;
+
+    @InjectView(R.id.pickHour)
     private SeekBar hourSeek;
+    @InjectView(R.id.pickMinute)
     private SeekBar minuteSeek;
 
     private TabHost mTabHost;
@@ -80,24 +98,13 @@ public class SleepCycles extends TabActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        chrono = (Chronometer) findViewById(R.id.sleepTime);
-
-        txtCycles = (TextView) findViewById(R.id.txtSleepCycles);
-        txtSleepLength = (TextView) findViewById(R.id.txtSleepLength);
-        txtCycleLength = (TextView) findViewById(R.id.txtCycleLength);
-        hourSeek = (SeekBar) findViewById(R.id.pickHour);
-        minuteSeek = (SeekBar) findViewById(R.id.pickMinute);
-
         // create tabs
         mTabHost = getTabHost();
-
+        LOG.debug("Creating calibrate tab.");
         mTabHost.addTab(mTabHost.newTabSpec("tab_test1")
-                .setIndicator(getString(R.string.calibrate))
-                .setContent(R.id.calibrate_tab));
-
-        mTabHost.addTab(mTabHost.newTabSpec("tab_test2")
-                .setIndicator(getString(R.string.alert))
+                .setIndicator(getString(R.string.calibrate)).setContent(R.id.calibrate_tab));
+        LOG.debug("Creating alarm tab.");
+        mTabHost.addTab(mTabHost.newTabSpec("tab_test2").setIndicator(getString(R.string.alert))
                 .setContent(R.id.alert_tab));
         mTabHost.setCurrentTab(0);
 
@@ -109,8 +116,6 @@ public class SleepCycles extends TabActivity {
         hourSeek.setProgress(wakeHour);
         minuteSeek.setProgress(wakeMinute);
 
-        btnStart = (Button) findViewById(R.id.btnStart);
-        btnStop = (Button) findViewById(R.id.btnStop);
         btnStop.setEnabled(false);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -159,8 +164,6 @@ public class SleepCycles extends TabActivity {
         });
 
         // time picker code
-
-        mTimeDisplay = (TextView) findViewById(R.id.timeDisplay);
 
         hourSeek.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -256,13 +259,11 @@ public class SleepCycles extends TabActivity {
     }
 
     /**
-     * Returns the elapsed time since the chronometer was started divided in
-     * hours, minutes, and seconds.
+     * Returns the elapsed time since the chronometer was started divided in hours, minutes, and
+     * seconds.
      * 
-     * @param startTime the time in milliseconds when the chronometer was
-     *            started
-     * @return an array of int[3] containg hours, minutes, seconds of elapsed
-     *         time
+     * @param startTime the time in milliseconds when the chronometer was started
+     * @return an array of int[3] containg hours, minutes, seconds of elapsed time
      */
     private int[] calculateTime(long startTime) {
         int[] time = new int[3];
@@ -299,9 +300,8 @@ public class SleepCycles extends TabActivity {
     }
 
     /**
-     * Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and
-     * SLEEP_CYCLE_MAX_LENGTH for best fit and returns the most likely cycle
-     * length.
+     * Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and SLEEP_CYCLE_MAX_LENGTH for
+     * best fit and returns the most likely cycle length.
      * 
      * @param sleepMinutes the total minutes of sleep
      * @return the sleep cycle length in minutes
@@ -395,10 +395,8 @@ public class SleepCycles extends TabActivity {
 
     // updates the time we display in the TextView
     private void updateDisplay() {
-        mTimeDisplay.setText(
-                new StringBuilder().append("Wakeup time ")
-                        .append(pad(wakeHour)).append(":")
-                        .append(pad(wakeMinute)));
+        mTimeDisplay.setText(new StringBuilder().append("Wakeup time ").append(pad(wakeHour))
+                .append(":").append(pad(wakeMinute)));
         // generate list adapter data
 
         int wakeMinutes = wakeHour * 60 + wakeMinute;
@@ -441,8 +439,7 @@ public class SleepCycles extends TabActivity {
     private static String pad(int amount) {
         if (amount >= 10) {
             return String.valueOf(amount);
-        }
-        else {
+        } else {
             return "0" + String.valueOf(amount);
         }
     }

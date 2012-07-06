@@ -1,70 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-   <groupId>org.unchiujar.android.sleepcycles</groupId>
-   <artifactId>sleepcycles</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
-   <packaging>apk</packaging>
+	<groupId>org.unchiujar.android.sleepcycles</groupId>
+	<artifactId>sleepcycles</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>apk</packaging>
 
-   <properties>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-   </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-   <name>SleepCycles</name>
-   <dependencies>
-      <dependency>
-         <groupId>android</groupId>
-         <artifactId>android</artifactId>
-         <version>2.2_r3</version>
-         <scope>provided</scope>
-      </dependency>
-
-
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-         <version>1.6.4</version>
-      </dependency>
-
-      <dependency>
-         <groupId>logback</groupId>
-         <artifactId>logback-android</artifactId>
-         <version>1.0.6-1</version>
-      </dependency>
+	<name>SleepCycles</name>
+	<dependencies>
+		<dependency>
+			<groupId>android</groupId>
+			<artifactId>android</artifactId>
+			<version>2.2_r3</version>
+			<scope>provided</scope>
+		</dependency>
 
 
-   </dependencies>
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-            <artifactId>android-maven-plugin</artifactId>
-            <version>3.2.0</version>
-            <configuration>
-               <sdk>
-                  <platform>8</platform>
-               </sdk>
-               <undeployBeforeDeploy>true</undeployBeforeDeploy>
-            </configuration>
-            <extensions>true</extensions>
-         </plugin>
-      </plugins>
-   </build>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.4</version>
+		</dependency>
 
-   <reporting>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.9.1</version>
-            <configuration>
-               <configLocation>android-cs.xml</configLocation>
-               <headerLocation>java.header</headerLocation>
-               
-            </configuration>
-         </plugin>
-      </plugins>
-   </reporting>
+		<dependency>
+			<groupId>logback-android</groupId>
+			<artifactId>logback-android</artifactId>
+			<version>1.0.6</version>
+			<classifier>1</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.roboguice</groupId>
+			<artifactId>roboguice</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<sdk>
+						<platform>8</platform>
+					</sdk>
+					<undeployBeforeDeploy>true</undeployBeforeDeploy>
+				</configuration>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<configLocation>android-cs.xml</configLocation>
+					<headerLocation>java.header</headerLocation>
+
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
