@@ -27,11 +27,9 @@ public class AlarmOption {
     private int sleepLength;
     private byte cycles;
 
-    /**
-     * @param time the time at which to go to bed
+    /** @param time the time at which to go to bed
      * @param sleepLength the total sleepLength of sleep in minutes
-     * @param cycles the number of cycles of sleep
-     */
+     * @param cycles the number of cycles of sleep */
     public AlarmOption(Date time, int sleepLength, byte cycles) {
         super();
         this.time = time;
@@ -39,52 +37,39 @@ public class AlarmOption {
         this.cycles = cycles;
     }
 
-    /**
-     * @return the time at which to go to bed
-     */
+    /** @return the time at which to go to bed */
     public Date getBedTime() {
         return time;
     }
 
-    /**
-     * @param time the time at which to go to bed
-     */
+    /** @param time the time at which to go to bed */
     public void setBedTime(Date time) {
         this.time = time;
     }
 
-    /**
-     * @return the sleep length in minutes
-     */
+    /** @return the sleep length in minutes */
     public int getSleepLength() {
         return sleepLength;
     }
 
-    /**
-     * @param length the sleep length in minutes
-     */
+    /** @param length the sleep length in minutes */
     public void setSleepLength(int length) {
         this.sleepLength = length;
     }
 
-    /**
-     * @return the cycles of sleep
-     */
+    /** @return the cycles of sleep */
     public byte getCycles() {
         return cycles;
     }
 
-    /**
-     * @param cycles the cycles of sleep
-     */
+    /** @param cycles the cycles of sleep */
     public void setCycles(byte cycles) {
         this.cycles = cycles;
     }
 
     @Override
     public String toString() {
-        return "AlarmOption [time=" + time + ", sleepLength=" + sleepLength + ", cycles=" + cycles
-                + "]";
+        return "AlarmOption [time=" + time + ", sleepLength=" + sleepLength + ", cycles=" + cycles + "]";
     }
 
 }

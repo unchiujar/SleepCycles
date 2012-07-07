@@ -35,25 +35,33 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
-
 public class AlarmOptionsAdapter extends ArrayAdapter<AlarmOption> {
     private final static Logger LOG = LoggerFactory.getLogger(AlarmOptionsAdapter.class);
-    private final Context context;
-    private final AlarmOption[] values;
-    @Inject
-    private Util util;
+    private final Context mContext;
+    private final AlarmOption[] mValues;
+    private final Util mUtil;
+    private final String mStrNotificationAdded;
+    private final String mStrForWakeTimeIn;
+    private final String mStrLength;
+    private final String mStrTime;
+    private final String mStrCycles;
 
     public AlarmOptionsAdapter(Context context, AlarmOption[] values) {
         super(context, R.layout.list_element, values);
-        this.context = context;
-        this.values = values;
+        this.mContext = context;
+        this.mValues = values;
+        mUtil = new Util(getContext());
+        mStrNotificationAdded = mContext.getString(R.string.notification_added);
+        mStrForWakeTimeIn = mContext.getString(R.string.for_wake_time_in);
+        mStrLength = mContext.getString(R.string.length);
+        mStrTime = mContext.getString(R.string.time);
+        mStrCycles = mContext.getString(R.string.cycles);
+
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View alarmOptionView = inflater.inflate(R.layout.list_element, parent, false);
         TextView lengthView = (TextView) alarmOptionView.findViewById(R.id.timeView);
         TextView hourView = (TextView) alarmOptionView.findViewById(R.id.lengthView);
@@ -62,28 +70,24 @@ public class AlarmOptionsAdapter extends ArrayAdapter<AlarmOption> {
         alarmButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
-                long alarmTime = values[position].getBedTime().getTime();
-                long wakeTime = values[position].getSleepLength() * 60 * 1000;
+                final long alarmTime = mValues[position].getBedTime().getTime();
+                final long wakeTime = mValues[position].getSleepLength() * 60 * 1000;
                 // TODO test code
-                util.setAlarm(alarmTime, wakeTime);
-
+                mUtil.setAlarm(alarmTime, wakeTime);
+                final long notificationTime = alarmTime - Calendar.getInstance().getTimeInMillis();
+                final long actualWakeTime = wakeTime + alarmTime - Calendar.getInstance().getTimeInMillis();
                 Toast.makeText(
-                        context,
-                        "Notification added for "
-                                + util.formatTimeText(alarmTime - Calendar.getInstance()
-                                        .getTimeInMillis())
-                                + " for wake time in "
-                                + util.formatTimeText(wakeTime +
-                                        alarmTime - Calendar.getInstance().getTimeInMillis()),
-                        Toast.LENGTH_LONG).show();
+                        mContext,
+                        mStrNotificationAdded + mUtil.formatTimeText(notificationTime) + mStrForWakeTimeIn
+                                + mUtil.formatTimeText(actualWakeTime), Toast.LENGTH_LONG).show();
             }
         });
-        lengthView.setText("Length "
-                + util.formatTimeText(values[position].getSleepLength()));
-        hourView.setText("Time " + values[position].getBedTime().getHours() + ":"
-                + values[position].getBedTime().getMinutes()
-                + " | Cycles " + values[position].getCycles());
-        return alarmOptionView;
+        lengthView.setText(mStrLength + mUtil.formatTimeText(mValues[position].getSleepLength()));
+        int hours = mValues[position].getBedTime().getHours();
+        int minutes = mValues[position].getBedTime().getMinutes();
+        int cycles = mValues[position].getCycles();
+        hourView.setText(mStrTime + mUtil.pad(hours) + ":" + mUtil.pad(minutes) + " | " + mStrCycles + cycles);
 
+        return alarmOptionView;
     }
 }

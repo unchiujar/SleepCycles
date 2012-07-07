@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import roboguice.activity.RoboTabActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -48,12 +49,13 @@ import com.google.inject.Inject;
 
 @ContentView(R.layout.main)
 public class SleepCycles extends RoboTabActivity {
-    private static final String CHRONO_START_TIME = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_start_time";
-
-    private static final String CHRONO_STARTED = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_started";
-
     private static final Logger LOG = LoggerFactory.getLogger(SleepCycles.class);
 
+    private static final String NOTIFICATON_TAB_TAG = "notification_tab_tag";
+    private static final String CALIBRATE_TAB_TAG = "calibrate_tab_tag";
+
+    private static final String CHRONO_START_TIME = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_start_time";
+    private static final String CHRONO_STARTED = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_started";
     private static final String CALIBRATION_CYCLES = "org.unchiujar.android.sleepcycles.sleepcycles.calibration_cycles";
     private static final String CYCLE_LENGTH = "org.unchiujar.android.sleepcycles.sleepcycles.cycle_length";
     private final static byte SLEEP_CYCLE_MIN_LENGTH = 60;
@@ -61,115 +63,107 @@ public class SleepCycles extends RoboTabActivity {
 
     private SharedPreferences prefs = null;
 
-    @InjectView(R.id.timeDisplay)
-    private TextView mTimeDisplay;
+    /*--------------- STRINGS -------------*/
+    @InjectResource(R.string.calibrate) private String mStrCalibrate;
+    @InjectResource(R.string.alert) private String mStrAlert;
+    @InjectResource(R.string.restart_button) private String mStrRestartButton;
+    @InjectResource(R.string.sleep_cycles) private String mStrSleepCycles;
+    @InjectResource(R.string.cycle_length) private String mStrCycleLength;
+    @InjectResource(R.string.sleep_length) private String mStrSleepLength;
+    @InjectResource(R.string.start_button) private String mStrStartButton;
+    /*--------------- END STRINGS -------------*/
 
-    @InjectView(R.id.btnStart)
-    private Button btnStart;
-    @InjectView(R.id.btnStop)
-    private Button btnStop;
+    /*--------------- VIEWS -------------*/
+    @InjectView(R.id.timeDisplay) private TextView mTimeDisplay;
+    @InjectView(R.id.btnStart) private Button mBtnStart;
+    @InjectView(R.id.btnStop) private Button mBtnStop;
+    @InjectView(R.id.sleepTime) private Chronometer mChrono;
+    @InjectView(R.id.txtSleepCycles) private TextView mTxtCycles;
+    @InjectView(R.id.txtSleepLength) private TextView mTxtSleepLength;
+    @InjectView(R.id.txtCycleLength) private TextView mTxtCycleLength;
+    @InjectView(R.id.pickHour) private SeekBar mHourSeek;
+    @InjectView(R.id.pickMinute) private SeekBar mMinuteSeek;
+    @InjectView(R.id.alarmList) private ListView mAlarmsList;
 
-    @InjectView(R.id.sleepTime)
-    private Chronometer chrono;
+    /*--------------- END VIEWS -------------*/
 
-    @InjectView(R.id.txtSleepCycles)
-    private TextView txtCycles;
-
-    @InjectView(R.id.txtSleepLength)
-    private TextView txtSleepLength;
-
-    @InjectView(R.id.txtCycleLength)
-    private TextView txtCycleLength;
-
-    @InjectView(R.id.pickHour)
-    private SeekBar hourSeek;
-    @InjectView(R.id.pickMinute)
-    private SeekBar minuteSeek;
-    @Inject
-    private Util util;
+    @Inject private Util mUtil;
 
     private TabHost mTabHost;
-
-    private AlarmOptionsAdapter alarms;
-
-    private byte wakeHour;
-    private byte wakeMinute;
-
+    private AlarmOptionsAdapter mAlarms;
+    private byte mWakeHour;
+    private byte mWakeMinute;
     private State state;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
         // create tabs
         mTabHost = getTabHost();
         LOG.debug("Creating calibrate tab.");
-        mTabHost.addTab(mTabHost.newTabSpec("tab_test1")
-                .setIndicator(getString(R.string.calibrate)).setContent(R.id.calibrate_tab));
+        mTabHost.addTab(mTabHost.newTabSpec(CALIBRATE_TAB_TAG).setIndicator(mStrCalibrate)
+                .setContent(R.id.calibrate_tab));
         LOG.debug("Creating alarm tab.");
-        mTabHost.addTab(mTabHost.newTabSpec("tab_test2").setIndicator(getString(R.string.alert))
-                .setContent(R.id.alert_tab));
+        mTabHost.addTab(mTabHost.newTabSpec(NOTIFICATON_TAB_TAG).setIndicator(mStrAlert).setContent(R.id.alert_tab));
         mTabHost.setCurrentTab(0);
 
         // get current time to set on seek bars
         Calendar currentTime = Calendar.getInstance();
-        wakeHour = (byte) currentTime.get(Calendar.HOUR_OF_DAY);
-        wakeMinute = (byte) currentTime.get(Calendar.MINUTE);
+        mWakeHour = (byte) currentTime.get(Calendar.HOUR_OF_DAY);
+        mWakeMinute = (byte) currentTime.get(Calendar.MINUTE);
 
-        hourSeek.setProgress(wakeHour);
-        minuteSeek.setProgress(wakeMinute);
+        mHourSeek.setProgress(mWakeHour);
+        mMinuteSeek.setProgress(mWakeMinute);
 
-        btnStop.setEnabled(false);
+        mBtnStop.setEnabled(false);
 
-        btnStart.setOnClickListener(new View.OnClickListener() {
+        mBtnStart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LOG.debug("Sleep timer started");
                 // save start time
                 state.setStartTime(SystemClock.elapsedRealtime());
                 state.setStarted(true);
-                chrono.setBase(SystemClock.elapsedRealtime());
-                chrono.setOnChronometerTickListener(new OnChronometerTickListener() {
+                mChrono.setBase(SystemClock.elapsedRealtime());
+                mChrono.setOnChronometerTickListener(new OnChronometerTickListener() {
                     public void onChronometerTick(Chronometer arg0) {
                         // NO-OP
                     }
                 });
 
-                chrono.start();
-                btnStart.setText(getString(R.string.restart_button));
-                btnStop.setEnabled(true);
+                mChrono.start();
+                mBtnStart.setText(mStrRestartButton);
+                mBtnStop.setEnabled(true);
             }
 
         });
 
-        btnStop.setOnClickListener(new View.OnClickListener() {
+        mBtnStop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LOG.debug("Sleep timer stopped");
-                chrono.stop();
+                mChrono.stop();
                 int sleepMinutes = (int) ((SystemClock.elapsedRealtime() - state.getStartTime()) / 1000 / 60);
                 // calculate cycle length in minutes
                 int cycleLength = calculateCycleApproximation(sleepMinutes);
                 state.setCycleLength(cycleLength);
                 state.setStarted(false);
-                chrono.setBase(SystemClock.elapsedRealtime());
+                mChrono.setBase(SystemClock.elapsedRealtime());
 
-                txtCycles.setText("Sleep cycles " + sleepMinutes / cycleLength);
-                txtCycleLength.setText("Cycle Length "
-                        + util.formatTimeText(cycleLength));
-                txtSleepLength.setText("Sleep Length "
-                        + util.formatTimeText(sleepMinutes));
+                mTxtCycles.setText(mStrSleepCycles + sleepMinutes / cycleLength);
+                mTxtCycleLength.setText(mStrCycleLength + mUtil.formatTimeText(cycleLength));
+                mTxtSleepLength.setText(mStrSleepLength + mUtil.formatTimeText(sleepMinutes));
 
                 saveCycleLength(cycleLength);
                 LOG.debug("Total sleep length {}, sleep cycle length {}", sleepMinutes, cycleLength);
-                btnStop.setEnabled(false);
-                btnStart.setText(getString(R.string.start_button));
+                mBtnStop.setEnabled(false);
+                mBtnStart.setText(mStrStartButton);
 
             }
         });
 
         // time picker code
 
-        hourSeek.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        mHourSeek.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
@@ -183,12 +177,12 @@ public class SleepCycles extends RoboTabActivity {
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 LOG.debug("Hour changed to {}", progress);
-                wakeHour = (byte) progress;
+                mWakeHour = (byte) progress;
                 updateDisplay();
             }
         });
 
-        minuteSeek.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        mMinuteSeek.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
@@ -202,30 +196,28 @@ public class SleepCycles extends RoboTabActivity {
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 LOG.debug("Minute changed to {}", progress);
-                wakeMinute = (byte) progress;
+                mWakeMinute = (byte) progress;
                 updateDisplay();
             }
         });
 
         // set roboto font
-        util.setFont(util.ROBOTO_BOLD_CONDENSED, txtCycles, txtSleepLength, txtCycleLength, btnStart, btnStop);
-        util.setFont(util.ROBOTO_REGULAR, chrono);
+        mUtil.setFont(mUtil.ROBOTO_BOLD_CONDENSED, mTxtCycles, mTxtSleepLength, mTxtCycleLength, mBtnStart, mBtnStop);
+        mUtil.setFont(mUtil.ROBOTO_REGULAR, mChrono);
 
         restoreState();
 
         if (loadCalibrationCycles() == 0) {
             // display the current date
-            hourSeek.setEnabled(false);
-            minuteSeek.setEnabled(false);
+            mHourSeek.setEnabled(false);
+            mMinuteSeek.setEnabled(false);
         } else {
             updateDisplay();
         }
 
     }
 
-    /**
-     * Restore state of the application.
-     */
+    /** Restore state of the application. */
     private void restoreState() {
         LOG.debug("Restoring state...");
         state = new State();
@@ -243,24 +235,22 @@ public class SleepCycles extends RoboTabActivity {
 
     private void setChronoState(boolean started) {
         if (started) {
-            btnStart.setText(getString(R.string.restart_button));
-            btnStop.setEnabled(true);
+            mBtnStart.setText(mStrRestartButton);
+            mBtnStop.setEnabled(true);
             // calculate hours, minutes, seconds from elapsed time
-            chrono.setBase(state.getStartTime());
-            chrono.start();
+            mChrono.setBase(state.getStartTime());
+            mChrono.start();
         } else {
-            btnStart.setText(getString(R.string.start_button));
-            btnStop.setEnabled(false);
-            chrono.stop();
+            mBtnStart.setText(mStrStartButton);
+            mBtnStop.setEnabled(false);
+            mChrono.stop();
         }
     }
 
-    /**
-     * Returns the elapsed time since the chronometer was started divided in hours, minutes, and seconds.
+    /** Returns the elapsed time since the chronometer was started divided in hours, minutes, and seconds.
      * 
      * @param startTime the time in milliseconds when the chronometer was started
-     * @return an array of int[3] containg hours, minutes, seconds of elapsed time
-     */
+     * @return an array of int[3] containg hours, minutes, seconds of elapsed time */
     private int[] calculateTime(long startTime) {
         int[] time = new int[3];
         long timePassed = SystemClock.elapsedRealtime() - startTime;
@@ -270,9 +260,7 @@ public class SleepCycles extends RoboTabActivity {
         return time;
     }
 
-    /**
-     * Save the state of the application.
-     */
+    /** Save the state of the application. */
     private void saveState() {
         prefs = getPreferences(MODE_PRIVATE);
         Editor edit = prefs.edit();
@@ -295,16 +283,14 @@ public class SleepCycles extends RoboTabActivity {
         restoreState();
     }
 
-    /**
-     * Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and SLEEP_CYCLE_MAX_LENGTH for best fit and returns the most likely cycle length.
+    /** Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and SLEEP_CYCLE_MAX_LENGTH for best fit and returns
+     * the most likely cycle length.
      * 
      * @param sleepMinutes the total minutes of sleep
-     * @return the sleep cycle length in minutes
-     */
+     * @return the sleep cycle length in minutes */
     private int calculateCycleApproximation(int sleepMinutes) {
 
-        ArrayList<Integer> remainder = new ArrayList<Integer>(SLEEP_CYCLE_MAX_LENGTH
-                - SLEEP_CYCLE_MIN_LENGTH + 1);
+        ArrayList<Integer> remainder = new ArrayList<Integer>(SLEEP_CYCLE_MAX_LENGTH - SLEEP_CYCLE_MIN_LENGTH + 1);
         int k = 0;
         for (int cycleLength = SLEEP_CYCLE_MIN_LENGTH; cycleLength <= SLEEP_CYCLE_MAX_LENGTH; cycleLength++) {
             // check if cycle length is shorter than sleep length
@@ -331,27 +317,23 @@ public class SleepCycles extends RoboTabActivity {
 
             // calculate the shortest distance to
             // a full cycle
-            int smallest = Math.min(Math.abs(SLEEP_CYCLE_MIN_LENGTH + i - remainder.get(i)),
-                    remainder.get(i));
+            int smallest = Math.min(Math.abs(SLEEP_CYCLE_MIN_LENGTH + i - remainder.get(i)), remainder.get(i));
             if (minimum > smallest) {
                 minimum = smallest;
                 k = i;
             }
         }
-        LOG.debug("Minimum is  {} which coresponds to cycle length  {}", minimum,
-                SLEEP_CYCLE_MIN_LENGTH + k);
+        LOG.debug("Minimum is  {} which coresponds to cycle length  {}", minimum, SLEEP_CYCLE_MIN_LENGTH + k);
 
         return SLEEP_CYCLE_MIN_LENGTH + k;
     }
 
-    /**
-     * Saves the the sleep cycle length.
+    /** Saves the the sleep cycle length.
      * 
-     * @param length the sleep cycle length in minutes
-     */
+     * @param length the sleep cycle length in minutes */
     private void saveCycleLength(int length) {
-        hourSeek.setEnabled(true);
-        minuteSeek.setEnabled(true);
+        mHourSeek.setEnabled(true);
+        mMinuteSeek.setEnabled(true);
 
         // get previous length
         int savedLength = loadCycleLength();
@@ -377,11 +359,9 @@ public class SleepCycles extends RoboTabActivity {
         return state.getCalibrations();
     }
 
-    /**
-     * Gets the saved sleep cycle length.
+    /** Gets the saved sleep cycle length.
      * 
-     * @return the saved sleep cycle length in minutes
-     */
+     * @return the saved sleep cycle length in minutes */
     private int loadCycleLength() {
         // // TODO remove hardcoding
         // return 60;
@@ -390,11 +370,11 @@ public class SleepCycles extends RoboTabActivity {
 
     // updates the time we display in the TextView
     private void updateDisplay() {
-        mTimeDisplay.setText(new StringBuilder().append("Wakeup time ").append(pad(wakeHour))
-                .append(":").append(pad(wakeMinute)));
+        mTimeDisplay.setText(new StringBuilder().append("Wakeup time ").append(mUtil.pad(mWakeHour)).append(":")
+                .append(mUtil.pad(mWakeMinute)));
         // generate list adapter data
 
-        int wakeMinutes = wakeHour * 60 + wakeMinute;
+        int wakeMinutes = mWakeHour * 60 + mWakeMinute;
 
         Calendar nowTime = Calendar.getInstance();
         int nowMinutes = nowTime.get(Calendar.HOUR_OF_DAY) * 60 + nowTime.get(Calendar.MINUTE);
@@ -426,17 +406,7 @@ public class SleepCycles extends RoboTabActivity {
 
         }
 
-        alarms = new AlarmOptionsAdapter(getApplicationContext(), alarmOptions);
-        ListView alarmsList = (ListView) findViewById(R.id.alarmList);
-        alarmsList.setAdapter(alarms);
+        mAlarms = new AlarmOptionsAdapter(getApplicationContext(), alarmOptions);
+        mAlarmsList.setAdapter(mAlarms);
     }
-
-    private static String pad(int amount) {
-        if (amount >= 10) {
-            return String.valueOf(amount);
-        } else {
-            return "0" + String.valueOf(amount);
-        }
-    }
-
 }

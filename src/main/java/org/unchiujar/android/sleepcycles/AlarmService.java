@@ -27,22 +27,26 @@ import static org.unchiujar.android.sleepcycles.R.string.bedtime_notification_ti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-
+import roboguice.inject.InjectResource;
+import roboguice.service.RoboService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
-public class AlarmService extends Service {
+import com.google.inject.Inject;
+
+public class AlarmService extends RoboService {
     private static final int ALARM_ID = 2132131;
     private static final Logger LOG = LoggerFactory.getLogger(AlarmService.class);
 
-    @Inject
-    private Util util;
+    @Inject private Util util;
+
+    @InjectResource(bedtime_notification_title) private String mStrBedtimeNotifTitle;
+    @InjectResource(bedtime_notification_text) private String mStrBedtimeNotifText;
+    @InjectResource(bedtime_notification_ticker) private String mStrBedtimeNotifTicker;
+    @Inject private NotificationManager mNotificationManager;
 
     @Override
     public void onCreate() {
@@ -58,28 +62,21 @@ public class AlarmService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-        LOG.debug("Binded {}", intent);
+        LOG.debug("Bound  {}", intent);
         byte hoursLeft = intent.getByteExtra(Util.HOURS_LEFT, (byte) 0);
         byte minutesLeft = intent.getByteExtra(Util.MINUTES_LEFT, (byte) 0);
         LOG.debug("Hours left {} minutes left {} ", hoursLeft, minutesLeft);
 
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        int icon = R.drawable.ic_launcher;
         // display a notification now
-        Notification notification = new Notification(icon,
-                getString(bedtime_notification_ticker), System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.ic_launcher, mStrBedtimeNotifTicker,
+                System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, AlarmService.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notification.setLatestEventInfo(this, mStrBedtimeNotifTitle,
+                mStrBedtimeNotifText + " " + util.formatTimeText(hoursLeft, minutesLeft), contentIntent);
 
-        notification.setLatestEventInfo(
-                this,
-                getString(bedtime_notification_title),
-                getString(bedtime_notification_text) + " "
-                        + util.formatTimeText(hoursLeft, minutesLeft), contentIntent);
         // add sound, lights, and vibration
         notification.defaults |= Notification.DEFAULT_ALL;
-
         mNotificationManager.notify(ALARM_ID, notification);
 
     }

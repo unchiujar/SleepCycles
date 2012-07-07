@@ -48,5 +48,13 @@ Android supports explicit and implicit Intents.
     
     <string name="turn_off">Turn Off</string>
     <string name="next">Start</string>
+    <string name="sleep_cycles">"Sleep cycles "</string>
+    <string name="cycle_length">"Cycle Length "</string>
+    <string name="sleep_length">"Sleep Length "</string>
+    <string name="notification_added">"Notification added for "</string>
+    <string name="for_wake_time_in">" for wake time in "</string>
+    <string name="length">"Length "</string>
+    <string name="time">"Time "</string>
+    <string name="cycles">"Cycles "</string>
 
 </resources>

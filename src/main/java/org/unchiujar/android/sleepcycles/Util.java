@@ -61,13 +61,11 @@ public class Util {
         ROBOTO_THIN = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Thin.ttf");
     }
 
-    /**
-     * Creates a {@link PendingIntent} with an alarm for a got to bed time.
+    /** Creates a {@link PendingIntent} with an alarm for a got to bed time.
      * 
      * @param alarmTime the time to go to bed
      * @param wakeTime the length of sleep
-     * @return a PendingIntent with the alarm set
-     */
+     * @return a PendingIntent with the alarm set */
     public PendingIntent setAlarm(long alarmTime, long wakeTime) {
 
         LOG.debug("Setting alarm for {} ", new Date(alarmTime));
@@ -97,25 +95,21 @@ public class Util {
         throw new UnsupportedOperationException("Method not implemented");
     }
 
-    /**
-     * Utility method to set a font on any number of views.
+    /** Utility method to set a font on any number of views.
      * 
      * @param type the font to be set
-     * @param views the views to set the font on
-     */
+     * @param views the views to set the font on */
     public void setFont(Typeface type, TextView... views) {
         for (TextView textView : views) {
             textView.setTypeface(type);
         }
     }
 
-    /**
-     * Convenience method to format the text displayed in the notification.
+    /** Convenience method to format the text displayed in the notification.
      * 
      * @param hoursLeft the hours left
      * @param minutesLeft the minutes left
-     * @return a formatted string
-     */
+     * @return a formatted string */
     public String formatTimeText(byte hoursLeft, byte minutesLeft) {
         String message = "";
 
@@ -124,8 +118,7 @@ public class Util {
             message += hoursLeft + " ";
 
             // add qualifier
-            message += hoursLeft > 1 ? mContext.getString(multipe_hours) : mContext
-                    .getString(one_hour);
+            message += hoursLeft > 1 ? mContext.getString(multipe_hours) : mContext.getString(one_hour);
 
         }
 
@@ -136,32 +129,40 @@ public class Util {
             // add actual value
             message += minutesLeft + " ";
             // add qualifier
-            message += minutesLeft > 1 ? mContext.getString(multipe_minutes) : mContext
-                    .getString(one_minute);
+            message += minutesLeft > 1 ? mContext.getString(multipe_minutes) : mContext.getString(one_minute);
         }
 
         return message;
     }
 
-    /**
-     * Convenience method to format the text displayed in the notification.
+    /** Convenience method to format the text displayed in the notification.
      * 
      * @param minutes the minutes left
-     * @return a formatted string
-     */
+     * @return a formatted string */
     public String formatTimeText(int minutes) {
         byte hoursLeft = (byte) (minutes / 60);
         byte minutesLeft = (byte) (minutes - hoursLeft * 60);
         return formatTimeText(hoursLeft, minutesLeft);
     }
 
-    /**
-     * Convenience method to format the text displayed in the notification.
+    /** Convenience method to format the text displayed in the notification.
      * 
      * @param millis milliseconds left
-     * @return a formatted string
-     */
+     * @return a formatted string */
     public String formatTimeText(long millis) {
         return formatTimeText((int) (millis / 1000 / 60));
     }
+
+    /** Pads value with zero if the value is less than 10.
+     * 
+     * @param amount amount to be padded
+     * @return returns 0 padded amount */
+    public String pad(int amount) {
+        if (amount >= 10) {
+            return String.valueOf(amount);
+        } else {
+            return "0" + String.valueOf(amount);
+        }
+    }
+
 }

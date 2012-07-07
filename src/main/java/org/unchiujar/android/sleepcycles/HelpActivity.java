@@ -19,14 +19,10 @@ import com.google.inject.Inject;
 public class HelpActivity extends RoboActivity {
 
     private static final String TURN_OFF_HELP = "org.unchiujar.android.sleepcycles.sleepcycles.turn_off_help";
-    @InjectView(R.id.btn_turn_off)
-    private Button mTurnOff;
-    @InjectView(R.id.btn_next)
-    private Button mNext;
-    @InjectView(R.id.help_text)
-    private TextView mHelpView;
-    @Inject
-    private Util mUtil;
+    @InjectView(R.id.btn_turn_off) private Button mTurnOff;
+    @InjectView(R.id.btn_next) private Button mNext;
+    @InjectView(R.id.help_text) private TextView mHelpView;
+    @Inject private Util mUtil;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
