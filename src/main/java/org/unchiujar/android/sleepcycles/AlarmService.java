@@ -27,6 +27,8 @@ import static org.unchiujar.android.sleepcycles.R.string.bedtime_notification_ti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -38,6 +40,9 @@ import android.os.IBinder;
 public class AlarmService extends Service {
     private static final int ALARM_ID = 2132131;
     private static final Logger LOG = LoggerFactory.getLogger(AlarmService.class);
+
+    @Inject
+    private Util util;
 
     @Override
     public void onCreate() {
@@ -71,7 +76,7 @@ public class AlarmService extends Service {
                 this,
                 getString(bedtime_notification_title),
                 getString(bedtime_notification_text) + " "
-                        + Util.formatTimeText(this, hoursLeft, minutesLeft), contentIntent);
+                        + util.formatTimeText(hoursLeft, minutesLeft), contentIntent);
         // add sound, lights, and vibration
         notification.defaults |= Notification.DEFAULT_ALL;
 

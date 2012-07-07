@@ -38,21 +38,37 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.widget.TextView;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+@Singleton
 public class Util {
+    private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+
     public static final String MINUTES_LEFT = "org.unchiujar.android.sleepcycles.sleepcycles.minutes";
     public static final String HOURS_LEFT = "org.unchiujar.android.sleepcycles.sleepcycles.hours";
-    private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+    public final Typeface ROBOTO_BOLD_CONDENSED;
+    public final Typeface ROBOTO_REGULAR;
+    public final Typeface ROBOTO_THIN;
+
+    private final Context mContext;
+
+    @Inject
+    Util(Context context) {
+        this.mContext = context;
+        ROBOTO_BOLD_CONDENSED = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-BoldCondensed.ttf");
+        ROBOTO_REGULAR = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
+        ROBOTO_THIN = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Thin.ttf");
+    }
 
     /**
      * Creates a {@link PendingIntent} with an alarm for a got to bed time.
      * 
      * @param alarmTime the time to go to bed
      * @param wakeTime the length of sleep
-     * @param context the application context for which to create the
-     *            PendingIntent
      * @return a PendingIntent with the alarm set
      */
-    public PendingIntent setAlarm(long alarmTime, long wakeTime, Context context) {
+    public PendingIntent setAlarm(long alarmTime, long wakeTime) {
 
         LOG.debug("Setting alarm for {} ", new Date(alarmTime));
 
@@ -60,7 +76,7 @@ public class Util {
         byte hours = (byte) (wakeTime / 1000 / 60 / 60);
         // calculate minutes
         byte minutes = (byte) ((wakeTime - hours * 60 * 60 * 1000) / 1000 / 60);
-        Intent alarmService = new Intent(context, AlarmService.class);
+        Intent alarmService = new Intent(mContext, AlarmService.class);
 
         alarmService.putExtra(HOURS_LEFT, hours);
         alarmService.putExtra(MINUTES_LEFT, minutes);
@@ -69,9 +85,9 @@ public class Util {
         // alarmService.putExtra(HOURS_LEFT, (byte) 2);
         // alarmService.putExtra(MINUTES_LEFT, (byte) 2);
 
-        PendingIntent pendingAlarmService = PendingIntent.getService(context, 0, alarmService, 0);
+        PendingIntent pendingAlarmService = PendingIntent.getService(mContext, 0, alarmService, 0);
 
-        AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarms = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         // set alarm
         alarms.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingAlarmService);
         return pendingAlarmService;
@@ -87,7 +103,7 @@ public class Util {
      * @param type the font to be set
      * @param views the views to set the font on
      */
-    public static void setFont(Typeface type, TextView... views) {
+    public void setFont(Typeface type, TextView... views) {
         for (TextView textView : views) {
             textView.setTypeface(type);
         }
@@ -96,12 +112,11 @@ public class Util {
     /**
      * Convenience method to format the text displayed in the notification.
      * 
-     * @param context context to get R.string
      * @param hoursLeft the hours left
      * @param minutesLeft the minutes left
      * @return a formatted string
      */
-    public static String formatTimeText(Context context, byte hoursLeft, byte minutesLeft) {
+    public String formatTimeText(byte hoursLeft, byte minutesLeft) {
         String message = "";
 
         if (hoursLeft > 0) {
@@ -109,19 +124,19 @@ public class Util {
             message += hoursLeft + " ";
 
             // add qualifier
-            message += hoursLeft > 1 ? context.getString(multipe_hours) : context
+            message += hoursLeft > 1 ? mContext.getString(multipe_hours) : mContext
                     .getString(one_hour);
 
         }
 
         if (minutesLeft > 0) {
             // add "and" only if we have hours AND minutes to display
-            message += hoursLeft > 0 ? " " + context.getString(and) + " " : "";
+            message += hoursLeft > 0 ? " " + mContext.getString(and) + " " : "";
 
             // add actual value
             message += minutesLeft + " ";
             // add qualifier
-            message += minutesLeft > 1 ? context.getString(multipe_minutes) : context
+            message += minutesLeft > 1 ? mContext.getString(multipe_minutes) : mContext
                     .getString(one_minute);
         }
 
@@ -131,24 +146,22 @@ public class Util {
     /**
      * Convenience method to format the text displayed in the notification.
      * 
-     * @param context context to get R.string
      * @param minutes the minutes left
      * @return a formatted string
      */
-    public static String formatTimeText(Context context, int minutes) {
+    public String formatTimeText(int minutes) {
         byte hoursLeft = (byte) (minutes / 60);
         byte minutesLeft = (byte) (minutes - hoursLeft * 60);
-        return formatTimeText(context, hoursLeft, minutesLeft);
+        return formatTimeText(hoursLeft, minutesLeft);
     }
 
     /**
      * Convenience method to format the text displayed in the notification.
      * 
-     * @param context context to get R.string
      * @param millis milliseconds left
      * @return a formatted string
      */
-    public static String formatTimeText(Context context, long millis) {
-        return formatTimeText(context, (int) (millis / 1000 / 60));
+    public String formatTimeText(long millis) {
+        return formatTimeText((int) (millis / 1000 / 60));
     }
 }

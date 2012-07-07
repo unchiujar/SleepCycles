@@ -35,10 +35,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.inject.Inject;
+
 public class AlarmOptionsAdapter extends ArrayAdapter<AlarmOption> {
     private final static Logger LOG = LoggerFactory.getLogger(AlarmOptionsAdapter.class);
     private final Context context;
     private final AlarmOption[] values;
+    @Inject
+    private Util util;
 
     public AlarmOptionsAdapter(Context context, AlarmOption[] values) {
         super(context, R.layout.list_element, values);
@@ -61,21 +65,21 @@ public class AlarmOptionsAdapter extends ArrayAdapter<AlarmOption> {
                 long alarmTime = values[position].getBedTime().getTime();
                 long wakeTime = values[position].getSleepLength() * 60 * 1000;
                 // TODO test code
-                new Util().setAlarm(alarmTime, wakeTime, context);
+                util.setAlarm(alarmTime, wakeTime);
 
                 Toast.makeText(
                         context,
                         "Notification added for "
-                                + Util.formatTimeText(context, alarmTime - Calendar.getInstance()
+                                + util.formatTimeText(alarmTime - Calendar.getInstance()
                                         .getTimeInMillis())
                                 + " for wake time in "
-                                + Util.formatTimeText(context, wakeTime +
+                                + util.formatTimeText(wakeTime +
                                         alarmTime - Calendar.getInstance().getTimeInMillis()),
                         Toast.LENGTH_LONG).show();
             }
         });
         lengthView.setText("Length "
-                + Util.formatTimeText(context, values[position].getSleepLength()));
+                + util.formatTimeText(values[position].getSleepLength()));
         hourView.setText("Time " + values[position].getBedTime().getHours() + ":"
                 + values[position].getBedTime().getMinutes()
                 + " | Cycles " + values[position].getCycles());

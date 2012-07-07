@@ -1,10 +1,11 @@
 
 package org.unchiujar.android.sleepcycles;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -12,12 +13,20 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class HelpActivity extends Activity {
+import com.google.inject.Inject;
+
+@ContentView(R.layout.help)
+public class HelpActivity extends RoboActivity {
 
     private static final String TURN_OFF_HELP = "org.unchiujar.android.sleepcycles.sleepcycles.turn_off_help";
+    @InjectView(R.id.btn_turn_off)
     private Button mTurnOff;
+    @InjectView(R.id.btn_next)
     private Button mNext;
+    @InjectView(R.id.help_text)
     private TextView mHelpView;
+    @Inject
+    private Util mUtil;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,13 +35,9 @@ public class HelpActivity extends Activity {
         if (getPreferences(MODE_PRIVATE).getBoolean(TURN_OFF_HELP, false)) {
             startSleepCycles();
         }
-        setContentView(R.layout.help);
-        mTurnOff = (Button) findViewById(R.id.btn_turn_off);
-        mNext = (Button) findViewById(R.id.btn_next);
-        mHelpView = (TextView) findViewById(R.id.help_text);
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Thin.ttf");
-        Util.setFont(font, mTurnOff, mNext, mHelpView);
-
+        mUtil.setFont(mUtil.ROBOTO_THIN, mTurnOff, mNext, mHelpView);
+        // if the turn off button is clicked, save the flag so
+        // the help activity is not shown on the next run
         mTurnOff.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {

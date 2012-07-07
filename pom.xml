@@ -29,10 +29,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>logback-android</groupId>
+			<groupId>logback</groupId>
 			<artifactId>logback-android</artifactId>
-			<version>1.0.6</version>
-			<classifier>1</classifier>
+			<version>1.0.6-1</version>
 		</dependency>
 
 		<dependency>

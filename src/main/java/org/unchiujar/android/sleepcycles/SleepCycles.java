@@ -21,19 +21,17 @@
 package org.unchiujar.android.sleepcycles;
 
 import java.util.ArrayList;
-
 import java.util.Calendar;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import roboguice.activity.RoboTabActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import android.app.TabActivity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
@@ -46,8 +44,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.google.inject.Inject;
+
 @ContentView(R.layout.main)
-public class SleepCycles extends TabActivity {
+public class SleepCycles extends RoboTabActivity {
     private static final String CHRONO_START_TIME = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_start_time";
 
     private static final String CHRONO_STARTED = "org.unchiujar.android.sleepcycles.sleepcycles.chrono_started";
@@ -85,8 +85,11 @@ public class SleepCycles extends TabActivity {
     private SeekBar hourSeek;
     @InjectView(R.id.pickMinute)
     private SeekBar minuteSeek;
+    @Inject
+    private Util util;
 
     private TabHost mTabHost;
+
     private AlarmOptionsAdapter alarms;
 
     private byte wakeHour;
@@ -98,6 +101,7 @@ public class SleepCycles extends TabActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
         // create tabs
         mTabHost = getTabHost();
         LOG.debug("Creating calibrate tab.");
@@ -151,9 +155,9 @@ public class SleepCycles extends TabActivity {
 
                 txtCycles.setText("Sleep cycles " + sleepMinutes / cycleLength);
                 txtCycleLength.setText("Cycle Length "
-                        + Util.formatTimeText(SleepCycles.this, cycleLength));
+                        + util.formatTimeText(cycleLength));
                 txtSleepLength.setText("Sleep Length "
-                        + Util.formatTimeText(SleepCycles.this, sleepMinutes));
+                        + util.formatTimeText(sleepMinutes));
 
                 saveCycleLength(cycleLength);
                 LOG.debug("Total sleep length {}, sleep cycle length {}", sleepMinutes, cycleLength);
@@ -204,15 +208,8 @@ public class SleepCycles extends TabActivity {
         });
 
         // set roboto font
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Thin.ttf");
-        Util.setFont(font, txtCycles, txtSleepLength, txtCycleLength, btnStart, btnStop);
-
-        // bold condensed for chronometer and wake time text
-        font = Typeface.createFromAsset(getAssets(), "fonts/Roboto-BoldCondensed.ttf");
-        Util.setFont(font, chrono);
-
-        // regular for labels
-        font = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+        util.setFont(util.ROBOTO_BOLD_CONDENSED, txtCycles, txtSleepLength, txtCycleLength, btnStart, btnStop);
+        util.setFont(util.ROBOTO_REGULAR, chrono);
 
         restoreState();
 
@@ -259,8 +256,7 @@ public class SleepCycles extends TabActivity {
     }
 
     /**
-     * Returns the elapsed time since the chronometer was started divided in hours, minutes, and
-     * seconds.
+     * Returns the elapsed time since the chronometer was started divided in hours, minutes, and seconds.
      * 
      * @param startTime the time in milliseconds when the chronometer was started
      * @return an array of int[3] containg hours, minutes, seconds of elapsed time
@@ -300,8 +296,7 @@ public class SleepCycles extends TabActivity {
     }
 
     /**
-     * Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and SLEEP_CYCLE_MAX_LENGTH for
-     * best fit and returns the most likely cycle length.
+     * Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and SLEEP_CYCLE_MAX_LENGTH for best fit and returns the most likely cycle length.
      * 
      * @param sleepMinutes the total minutes of sleep
      * @return the sleep cycle length in minutes
