@@ -9,7 +9,7 @@
 
    <appender name="LOGCAT" class="ch.qos.logback.classic.android.LogcatAppender">
       <encoder>
-         <pattern>%-4relative [%thread] %L %-5level %logger{35} - %msg%n
+         <pattern>%-4relative [%thread] %L - %msg%n
          </pattern>
       </encoder>
    </appender>
