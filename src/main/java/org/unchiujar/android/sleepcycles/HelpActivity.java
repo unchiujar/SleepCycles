@@ -35,7 +35,8 @@ public class HelpActivity extends RoboActivity {
             startSleepCycles();
         }
         mHelpView.setText(Html.fromHtml(mStrHelp));
-        mUtil.setFont(mUtil.ROBOTO_THIN, mTurnOff, mNext, mHelpView);
+
+        mUtil.setFont(mUtil.ROBOTO_REGULAR, mTurnOff, mNext, mHelpView);
         // if the turn off button is clicked, save the flag so
         // the help activity is not shown on the next run
         mTurnOff.setOnClickListener(new OnClickListener() {
