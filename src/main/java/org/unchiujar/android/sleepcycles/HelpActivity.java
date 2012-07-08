@@ -3,10 +3,12 @@ package org.unchiujar.android.sleepcycles;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +23,8 @@ public class HelpActivity extends RoboActivity {
     private static final String TURN_OFF_HELP = "org.unchiujar.android.sleepcycles.sleepcycles.turn_off_help";
     @InjectView(R.id.btn_turn_off) private Button mTurnOff;
     @InjectView(R.id.btn_next) private Button mNext;
-    @InjectView(R.id.help_text) private TextView mHelpView;
+    @InjectView(R.id.help_view) private TextView mHelpView;
+    @InjectResource(R.string.help_text) private String mStrHelp;
     @Inject private Util mUtil;
 
     @Override
@@ -31,6 +34,7 @@ public class HelpActivity extends RoboActivity {
         if (getPreferences(MODE_PRIVATE).getBoolean(TURN_OFF_HELP, false)) {
             startSleepCycles();
         }
+        mHelpView.setText(Html.fromHtml(mStrHelp));
         mUtil.setFont(mUtil.ROBOTO_THIN, mTurnOff, mNext, mHelpView);
         // if the turn off button is clicked, save the flag so
         // the help activity is not shown on the next run

@@ -28,16 +28,15 @@
         android:text="@string/next" />
 
     <TextView
-        android:id="@+id/help_text"
+        android:id="@+id/help_view"
         android:layout_width="wrap_content"
         android:layout_height="400dp"
         android:layout_above="@+id/btn_turn_off"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="38dp"
-        android:padding="@dimen/padding_medium"
+        android:padding="@dimen/padding_large"
         android:scrollbars="vertical"
-        android:text="@string/help"
         tools:context=".HelpActivity" />
 
 </RelativeLayout>
