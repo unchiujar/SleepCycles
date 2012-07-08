@@ -13,8 +13,8 @@
    </properties>
 
    <scm>
-      <connection>scm:git:http://github.com:unchiujar/SleepCycles.git</connection>
-      <developerConnection>scm:git:http://github.com:unchiujar/SleepCycles.git</developerConnection>
+      <connection>scm:git:ssh://github.com:unchiujar/SleepCycles.git</connection>
+      <developerConnection>scm:git:ssh://github.com:unchiujar/SleepCycles.git</developerConnection>
       <url>https://github.com/unchiujar/SleepCycles</url>
    </scm>
 
