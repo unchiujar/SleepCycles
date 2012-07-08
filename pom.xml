@@ -12,6 +12,12 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    </properties>
 
+   <scm>
+      <connection>scm:git:file://localhost/./</connection>
+      <developerConnection>scm:git:file://localhost/./</developerConnection>
+      <url>https://github.com/unchiujar/SleepCycles</url>
+   </scm>
+
    <name>SleepCycles</name>
    <dependencies>
       <dependency>
@@ -47,7 +53,7 @@
       <finalName>${project.artifactId}-${project.version}</finalName>
 
       <plugins>
-      
+
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>
@@ -101,8 +107,8 @@
                </execution>
             </executions>
          </plugin>
-         
-         
+
+
       </plugins>
    </build>
 
