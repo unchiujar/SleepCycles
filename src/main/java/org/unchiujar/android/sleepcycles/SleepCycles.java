@@ -35,6 +35,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -64,30 +67,48 @@ public class SleepCycles extends RoboTabActivity {
     private SharedPreferences prefs = null;
 
     /*--------------- STRINGS -------------*/
-    @InjectResource(R.string.calibrate) private String mStrCalibrate;
-    @InjectResource(R.string.alert) private String mStrAlert;
-    @InjectResource(R.string.restart_button) private String mStrRestartButton;
-    @InjectResource(R.string.sleep_cycles) private String mStrSleepCycles;
-    @InjectResource(R.string.cycle_length) private String mStrCycleLength;
-    @InjectResource(R.string.sleep_length) private String mStrSleepLength;
-    @InjectResource(R.string.start_button) private String mStrStartButton;
+    @InjectResource(R.string.calibrate)
+    private String mStrCalibrate;
+    @InjectResource(R.string.alert)
+    private String mStrAlert;
+    @InjectResource(R.string.restart_button)
+    private String mStrRestartButton;
+    @InjectResource(R.string.sleep_cycles)
+    private String mStrSleepCycles;
+    @InjectResource(R.string.cycle_length)
+    private String mStrCycleLength;
+    @InjectResource(R.string.sleep_length)
+    private String mStrSleepLength;
+    @InjectResource(R.string.start_button)
+    private String mStrStartButton;
     /*--------------- END STRINGS -------------*/
 
     /*--------------- VIEWS -------------*/
-    @InjectView(R.id.timeDisplay) private TextView mTimeDisplay;
-    @InjectView(R.id.btnStart) private Button mBtnStart;
-    @InjectView(R.id.btnStop) private Button mBtnStop;
-    @InjectView(R.id.sleepTime) private Chronometer mChrono;
-    @InjectView(R.id.txtSleepCycles) private TextView mTxtCycles;
-    @InjectView(R.id.txtSleepLength) private TextView mTxtSleepLength;
-    @InjectView(R.id.txtCycleLength) private TextView mTxtCycleLength;
-    @InjectView(R.id.pickHour) private SeekBar mHourSeek;
-    @InjectView(R.id.pickMinute) private SeekBar mMinuteSeek;
-    @InjectView(R.id.alarmList) private ListView mAlarmsList;
+    @InjectView(R.id.timeDisplay)
+    private TextView mTimeDisplay;
+    @InjectView(R.id.btnStart)
+    private Button mBtnStart;
+    @InjectView(R.id.btnStop)
+    private Button mBtnStop;
+    @InjectView(R.id.sleepTime)
+    private Chronometer mChrono;
+    @InjectView(R.id.txtSleepCycles)
+    private TextView mTxtCycles;
+    @InjectView(R.id.txtSleepLength)
+    private TextView mTxtSleepLength;
+    @InjectView(R.id.txtCycleLength)
+    private TextView mTxtCycleLength;
+    @InjectView(R.id.pickHour)
+    private SeekBar mHourSeek;
+    @InjectView(R.id.pickMinute)
+    private SeekBar mMinuteSeek;
+    @InjectView(R.id.alarmList)
+    private ListView mAlarmsList;
 
     /*--------------- END VIEWS -------------*/
 
-    @Inject private Util mUtil;
+    @Inject
+    private Util mUtil;
 
     private TabHost mTabHost;
     private AlarmOptionsAdapter mAlarms;
@@ -105,7 +126,8 @@ public class SleepCycles extends RoboTabActivity {
         mTabHost.addTab(mTabHost.newTabSpec(CALIBRATE_TAB_TAG).setIndicator(mStrCalibrate)
                 .setContent(R.id.calibrate_tab));
         LOG.debug("Creating alarm tab.");
-        mTabHost.addTab(mTabHost.newTabSpec(NOTIFICATON_TAB_TAG).setIndicator(mStrAlert).setContent(R.id.alert_tab));
+        mTabHost.addTab(mTabHost.newTabSpec(NOTIFICATON_TAB_TAG).setIndicator(mStrAlert)
+                .setContent(R.id.alert_tab));
         mTabHost.setCurrentTab(0);
 
         // get current time to set on seek bars
@@ -202,7 +224,8 @@ public class SleepCycles extends RoboTabActivity {
         });
 
         // set roboto font
-        mUtil.setFont(mUtil.ROBOTO_BOLD_CONDENSED, mTxtCycles, mTxtSleepLength, mTxtCycleLength, mBtnStart, mBtnStop);
+        mUtil.setFont(mUtil.ROBOTO_BOLD_CONDENSED, mTxtCycles, mTxtSleepLength, mTxtCycleLength,
+                mBtnStart, mBtnStop);
         mUtil.setFont(mUtil.ROBOTO_REGULAR, mChrono);
 
         restoreState();
@@ -215,6 +238,24 @@ public class SleepCycles extends RoboTabActivity {
             updateDisplay();
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_help, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int tab = getTabHost().getCurrentTab();
+        if (tab == 0) {
+            LOG.debug("Showing calibrate tab help.");
+        } else {
+            LOG.debug("Showing alarm tab help.");
+        }
+        return true;
     }
 
     /** Restore state of the application. */
@@ -247,10 +288,13 @@ public class SleepCycles extends RoboTabActivity {
         }
     }
 
-    /** Returns the elapsed time since the chronometer was started divided in hours, minutes, and seconds.
+    /**
+     * Returns the elapsed time since the chronometer was started divided in hours, minutes, and
+     * seconds.
      * 
      * @param startTime the time in milliseconds when the chronometer was started
-     * @return an array of int[3] containg hours, minutes, seconds of elapsed time */
+     * @return an array of int[3] containg hours, minutes, seconds of elapsed time
+     */
     private int[] calculateTime(long startTime) {
         int[] time = new int[3];
         long timePassed = SystemClock.elapsedRealtime() - startTime;
@@ -283,14 +327,17 @@ public class SleepCycles extends RoboTabActivity {
         restoreState();
     }
 
-    /** Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and SLEEP_CYCLE_MAX_LENGTH for best fit and returns
-     * the most likely cycle length.
+    /**
+     * Checks against every integer between SLEEP_CYCLE_MIN_LENGTH and SLEEP_CYCLE_MAX_LENGTH for
+     * best fit and returns the most likely cycle length.
      * 
      * @param sleepMinutes the total minutes of sleep
-     * @return the sleep cycle length in minutes */
+     * @return the sleep cycle length in minutes
+     */
     private int calculateCycleApproximation(int sleepMinutes) {
 
-        ArrayList<Integer> remainder = new ArrayList<Integer>(SLEEP_CYCLE_MAX_LENGTH - SLEEP_CYCLE_MIN_LENGTH + 1);
+        ArrayList<Integer> remainder = new ArrayList<Integer>(SLEEP_CYCLE_MAX_LENGTH
+                - SLEEP_CYCLE_MIN_LENGTH + 1);
         int k = 0;
         for (int cycleLength = SLEEP_CYCLE_MIN_LENGTH; cycleLength <= SLEEP_CYCLE_MAX_LENGTH; cycleLength++) {
             // check if cycle length is shorter than sleep length
@@ -317,20 +364,24 @@ public class SleepCycles extends RoboTabActivity {
 
             // calculate the shortest distance to
             // a full cycle
-            int smallest = Math.min(Math.abs(SLEEP_CYCLE_MIN_LENGTH + i - remainder.get(i)), remainder.get(i));
+            int smallest = Math.min(Math.abs(SLEEP_CYCLE_MIN_LENGTH + i - remainder.get(i)),
+                    remainder.get(i));
             if (minimum > smallest) {
                 minimum = smallest;
                 k = i;
             }
         }
-        LOG.debug("Minimum is  {} which coresponds to cycle length  {}", minimum, SLEEP_CYCLE_MIN_LENGTH + k);
+        LOG.debug("Minimum is  {} which coresponds to cycle length  {}", minimum,
+                SLEEP_CYCLE_MIN_LENGTH + k);
 
         return SLEEP_CYCLE_MIN_LENGTH + k;
     }
 
-    /** Saves the the sleep cycle length.
+    /**
+     * Saves the the sleep cycle length.
      * 
-     * @param length the sleep cycle length in minutes */
+     * @param length the sleep cycle length in minutes
+     */
     private void saveCycleLength(int length) {
         mHourSeek.setEnabled(true);
         mMinuteSeek.setEnabled(true);
@@ -359,9 +410,11 @@ public class SleepCycles extends RoboTabActivity {
         return state.getCalibrations();
     }
 
-    /** Gets the saved sleep cycle length.
+    /**
+     * Gets the saved sleep cycle length.
      * 
-     * @return the saved sleep cycle length in minutes */
+     * @return the saved sleep cycle length in minutes
+     */
     private int loadCycleLength() {
         // // TODO remove hardcoding
         // return 60;
@@ -370,8 +423,8 @@ public class SleepCycles extends RoboTabActivity {
 
     // updates the time we display in the TextView
     private void updateDisplay() {
-        mTimeDisplay.setText(new StringBuilder().append("Wakeup time ").append(mUtil.pad(mWakeHour)).append(":")
-                .append(mUtil.pad(mWakeMinute)));
+        mTimeDisplay.setText(new StringBuilder().append("Wakeup time ")
+                .append(mUtil.pad(mWakeHour)).append(":").append(mUtil.pad(mWakeMinute)));
         // generate list adapter data
 
         int wakeMinutes = mWakeHour * 60 + mWakeMinute;
